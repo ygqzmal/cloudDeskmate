@@ -1,130 +1,121 @@
-ThinkPHP 5.0
-===============
 
-[![Downloads](https://img.shields.io/github/downloads/top-think/think/total.svg)](https://github.com/top-think/think/releases)
-[![Releases](https://img.shields.io/github/release/top-think/think.svg)](https://github.com/top-think/think/releases/latest)
-[![Releases Downloads](https://img.shields.io/github/downloads/top-think/think/latest/total.svg)](https://github.com/top-think/think/releases/latest)
-[![Packagist Status](https://img.shields.io/packagist/v/top-think/think.svg)](https://packagist.org/packages/topthink/think)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/top-think/think.svg)](https://packagist.org/packages/topthink/think)
 
-ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PHP版本要求提升到5.4，对已有的CBD模式做了更深的强化，优化核心，减少依赖，基于全新的架构思想和命名空间实现，是ThinkPHP突破原有框架思路的颠覆之作，其主要特性包括：
 
- + 基于命名空间和众多PHP新特性
- + 核心功能组件化
- + 强化路由功能
- + 更灵活的控制器
- + 重构的模型和数据库类
- + 配置文件可分离
- + 重写的自动验证和完成
- + 简化扩展机制
- + API支持完善
- + 改进的Log类
- + 命令行访问支持
- + REST支持
- + 引导文件支持
- + 方便的自动生成定义
- + 真正惰性加载
- + 分布式环境支持
- + 更多的社交类库
+@[TOC](PHP TP5实战云同桌小程序)
 
-> ThinkPHP5的运行环境要求PHP5.4以上。
 
-详细开发文档参考 [ThinkPHP5完全开发手册](http://www.kancloud.cn/manual/thinkphp5)
+<hr style=" border:solid; width:100px; height:1px;" color=#000000 size=1">
 
-## 目录结构
+# 前言
 
-初始的目录结构如下：
+<font color=#999AAA >参加腾讯小程序比赛，和工作室前端小伙伴一起组队完成了这个云同桌小程序。本人负责该项目后端，主要使用PHP的thinkphp5框架来完成，数据库使用mysql；将码云连接放到文末，相关代码在application下的ygq文件中。</font>
 
-~~~
-www  WEB部署目录（或者子目录）
-├─composer.json         composer定义文件
-├─README.md             README文件
-├─LICENSE.txt           授权说明文件
-├─think                 命令行入口文件
-├─application           应用目录
-│  ├─common             公共模块目录（可以更改）
-│  ├─runtime            应用的运行时目录（可写，可定制）
-│  ├─module_name        模块目录
-│  │  ├─config.php      模块配置文件
-│  │  ├─common.php      模块函数文件
-│  │  ├─controller      控制器目录
-│  │  ├─model           模型目录
-│  │  ├─view            视图目录
-│  │  └─ ...            更多类库目录
-│  │
-│  ├─common.php         公共函数文件
-│  ├─config.php         公共配置文件
-│  ├─route.php          路由配置文件
-│  └─database.php       数据库配置文件
-│
-├─public                WEB目录（对外访问目录）
-│  ├─index.php          入口文件
-│  └─.htaccess          用于apache的重写
-│
-├─thinkphp              框架系统目录
-│  ├─lang               语言文件目录
-│  ├─library            框架类库目录
-│  │  ├─think           Think类库包目录
-│  │  └─traits          系统Trait目录
-│  │
-│  ├─mode               应用模式目录
-│  ├─tpl                系统模板目录
-│  ├─tests              单元测试文件目录
-│  ├─base.php           基础定义文件
-│  ├─console.php        控制台入口文件
-│  ├─convention.php     框架惯例配置文件
-│  ├─helper.php         助手函数文件
-│  ├─phpunit.xml        phpunit配置文件
-│  └─start.php          框架入口文件
-│
-├─extend                扩展类库目录
-├─vendor                第三方类库目录（Composer依赖库）
-~~~
+<hr style=" border:solid; width:100px; height:1px;" color=#000000 size=1">
 
-> router.php用于php自带webserver支持，可用于快速测试
-> 切换到public目录后，启动命令：php -S localhost:8888  router.php
-> 上面的目录结构和名称是可以改变的，这取决于你的入口文件和配置参数。
+<font color=#999AAA >
 
-## 命名规范
+# 一、TP5是什么？
 
-`ThinkPHP5`遵循PSR-2命名规范和PSR-4自动加载规范，并且注意如下规范：
 
-### 目录和文件
+<font color=#999AAA >ThinkPHP是一个快速、简单的基于MVC和面向对象的轻量级PHP开发框架，为WEB应用和API开发提供了强有力的支持。作为php开发者必学的一个框架。
 
-*   目录不强制规范，驼峰和小写+下划线模式均支持；
-*   类库、函数文件统一以`.php`为后缀；
-*   类的文件名均以命名空间定义，并且命名空间的路径和类库文件所在路径一致；
-*   类名和类文件名保持一致，统一采用驼峰法命名（首字母大写）；
 
-### 函数和类、属性命名
-*   类的命名采用驼峰法，并且首字母大写，例如 `User`、`UserType`，默认不需要添加后缀，例如`UserController`应该直接命名为`User`；
-*   函数的命名使用小写字母和下划线（小写字母开头）的方式，例如 `get_client_ip`；
-*   方法的命名使用驼峰法，并且首字母小写，例如 `getUserName`；
-*   属性的命名使用驼峰法，并且首字母小写，例如 `tableName`、`instance`；
-*   以双下划线“__”打头的函数或方法作为魔法方法，例如 `__call` 和 `__autoload`；
 
-### 常量和配置
-*   常量以大写字母和下划线命名，例如 `APP_PATH`和 `THINK_PATH`；
-*   配置参数以小写字母和下划线命名，例如 `url_route_on` 和`url_convert`；
 
-### 数据表和字段
-*   数据表和字段采用小写加下划线方式命名，并注意字段名不要以下划线开头，例如 `think_user` 表和 `user_name`字段，不建议使用驼峰和中文作为数据表字段命名。
 
-## 参与开发
-注册并登录 Github 帐号， fork 本项目并进行改动。
+# 二、使用
+## 1.mvc思想
+![主要遵循mvc思想](https://img-blog.csdnimg.cn/20210307224833529.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTE2NjUxMQ==,size_16,color_FFFFFF,t_70#pic_center)主要遵循mvc思想，controller层主要负责view层传来的请求，正真对数据库进行操作的是model层，由于逻辑相对复杂，因此引入TP5框架自带的验证器也就是逻辑层，用于数据的校验与判断。可以实现每层代码量相对减少，逻辑清晰易懂。
 
-更多细节参阅 [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## 版权信息
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
+<font color=#999AAA >控制层代码如下（示例）：
 
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2016 by ThinkPHP (http://thinkphp.cn)
 
-All rights reserved。
+```c
+<?php
+namespace app\ygq\controller;
+use think\Controller;
+use app\ygq\model\User as UserModel;
+use app\ygq\model\Sign as SignModel;
+use think\Request;
+use think\Session;
+//个人信息
+class User extends Controller{
+	//展示个人信息
+	public function index(){
+		$user = UserModel::get(Session::get('user_id'));
+		$sign = SignModel::all(['uid'=>Session::get('user_id')]);
+		$user['sign'] = $sign;
+		return json($user);
+	}
+	//用户数据获取(头像和昵称)
+	public function addUser(){
+		$data = input('post.');
+		$ret  = UserModel::getByName($data['name']);
+		if($ret){
+			//return'用户已经注册';
+			Session::set('user_id',$ret['id']);
+			return json(['success'=>'登录成功'],200);
+		}else{
+			//return '用户还没注册';
+			$user    = new UserModel;
+			$request = Request::instance();
+			$file    = $request->file('image');
+			$info    = $file->rule('date')->move(ROOT_PATH.'public'.DS.'uploads');
+			$data['image'] = $info->getRealPath();
+			if($user->allowField(true)->save($data)){
+				Session::set('user_id',$ret['id']);
+            	return json(['success'=>'登录成功'],200);
+        	}else{
+            	return json(['error'=>'登录失败'],404);
+        	}
+		}
+	}
+	//个人介绍更新和添加
+	public function addIntor(){
+		$id   = Session::get('user_id');
+        $data = input('post.');
+		if(strlen($data['introduce']) > 100){
+			return json(['error'=>'字数超出规定'],404);
+		}
+        if(UserModel::update($data,['id'=>$id])){
+            return json(['success'=>'介绍添加成功'],200);
+        }else{
+            return json(['error'=>'介绍添加失败'],404);
+        }
+	}
+	//每点一个标签就调用一次这个方法
+	public function addSign(){
+		$uid = Session::get('user_id');
+		$ret = SignModel::where('uid','=',$uid)->select();
+		if(count($ret) >= 4){
+			return json(['error'=>'标签最多选4个'],404);
+		}
+        $data = input('post.');
+        $data['uid'] = $uid;
+        if(SignModel::create($data)){
+            return json(['success'=>'标签添加成功'],200);
+        }else{
+            return json(['error'=>'标签添加失败'],404);
+        }
+	}
+	//标签删除
+	public function delSign($id){
+        if(SignModel::destroy($id)){
+            return json(['success'=>'记录删除成功'],200);
+        }else{
+            return json(['error'=>'记录删除失败'],404);
+        }
+	}
+}
+```
 
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
+## 2.感受
+thinkphp框架使用起来并不困难，对于初学者第一次接触框架的同学来说，还是比较友好，主要体现在易安装，开发web应用简单明了，教学资料丰富上，网上第三方库也成熟，便于引用。至于运用程度，自然是熟能生巧。不过也有一些缺点，个人感觉对比起golang的beego、gin框架，代码不够简练，有单复杂，个人更喜欢beego一些。
 
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+# 总结
+<font color=#999AAA >php属于弱类型语言，相比起其他语言来说还是比较简单的，个人感觉php更适于轻量级web开发，开发速度快，php学习上手快，php基础不会太难。但php可能遇到高并发的时候会陷入瓶颈，难以突破。最后将代码连接放出来。
+
+[码云代码连接地址](https://gitee.com/ygqzmal/php)
